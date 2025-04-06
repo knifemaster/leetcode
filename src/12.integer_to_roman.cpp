@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 using namespace std;
 
@@ -14,19 +15,27 @@ std::unordered_map<int, string> dictionary = {
     { 1000, "M" }
 };
 
+vector<string> ones = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+vector<string> tens = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+vector<string> hundreds = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+vector<string> thousands = {"", "M", "MM", "MMM", "MMMM"};
+
 string intToRoman(int num) {
-    
-    int thousands = num / 1000;
-    int hundreds = (num / 100) % 10;
-    int tens = (num/10) % 10;
-    int ones = num % 10;
+
+
+
+    int thous = num / 1000;
+    int hundr = (num / 100) % 10;
+    int ten = (num/10) % 10;
+    int one = num % 10;
 
     std::cout << num << std::endl;
-    std::cout << thousands << std::endl;
-    std::cout << hundreds << std::endl;
-    std::cout << tens << std::endl;
-    std::cout << ones << std::endl;
+    std::cout << thous << std::endl;
+    std::cout << hundr << std::endl;
+    std::cout << ten << std::endl;
+    std::cout << one << std::endl;
     
+    return thousands[thous] + hundreds[hundr] + tens[ten] + ones[one];
     
     //int thousands = num / 1000;
     //int
@@ -37,7 +46,7 @@ string intToRoman(int num) {
 
 int main() {
 
-    int number = 3749;
-    intToRoman(number);
+    int number = 58;
+    std::cout << intToRoman(number);
 
 }
