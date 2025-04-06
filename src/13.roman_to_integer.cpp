@@ -3,7 +3,7 @@
 
 
 int romanToInt(string s) {
-
+    std::unordered_map<std::string, int> dictionary = {};
     return 0;
 }
 
