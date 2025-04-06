@@ -87,3 +87,43 @@ int main() {
 
     return 0;
 }
+
+
+
+#include <string>
+#include <unordered_map>
+#include <tuple>
+
+using namespace std;
+
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        unordered_map<string, bool> memo;
+        return match(s, p, 0, 0, memo);
+    }
+
+private:
+    bool match(const string& s, const string& p, int i, int j, unordered_map<string, bool>& memo) {
+        string key = to_string(i) + "," + to_string(j);
+        if (memo.find(key) != memo.end()) {
+            return memo[key];
+        }
+
+        if (j == p.size()) {
+            return i == s.size();
+        }
+
+        bool first_match = (i < s.size() && (p[j] == s[i] || p[j] == '.'));
+
+        if (j + 1 < p.size() && p[j + 1] == '*') {
+            bool result = match(s, p, i, j + 2, memo) || (first_match && match(s, p, i + 1, j, memo));
+            memo[key] = result;
+            return result;
+        } else {
+            bool result = first_match && match(s, p, i + 1, j + 1, memo);
+            memo[key] = result;
+            return result;
+        }
+    }
+};
