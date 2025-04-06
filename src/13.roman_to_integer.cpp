@@ -8,7 +8,7 @@ int romanToInt(string s) {
 }
 
 int main() {
-
+    std::string roman = "XIV";
     return 0;
 }
 
