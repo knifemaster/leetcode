@@ -1,3 +1,23 @@
+    static const string thousands[] = {"", "M", "MM", "MMM"};
+    static const string hundreds[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+    static const string tens[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+    static const string ones[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+
+class Solution {
+
+public:
+
+    string intToRoman(int num) {
+        
+        return thousands[num / 1000] + hundreds[(num % 1000) / 100] + tens[(num % 100) / 10] + ones[num % 10];
+
+    }
+};
+
+
+
+
+
 #include <iostream>
 #include <string>
 #include <unordered_map>
