@@ -1,42 +1,78 @@
+        sort(nums.begin(), nums.end());
+        int n = nums.size();
+        long closest_sum = numeric_limits<int>::max(); // Используем long для избежания переполнения
+
+        for (int i = 0; i < n - 2; ++i) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue; // Пропускаем дубликаты
+            }
+
+            int left = i + 1;
+            int right = n - 1;
+
+            while (left < right) {
+                long current_sum = nums[i] + nums[left] + nums[right]; // Используем long
+
+                if (abs(current_sum - target) < abs(closest_sum - target)) {
+                    closest_sum = current_sum;
+                }
+
+                if (current_sum == target) {
+                    return target; // Нашли точное совпадение
+                } else if (current_sum < target) {
+                    ++left;
+                } else {
+                    --right;
+                }
+            }
+        }
+
+        return static_cast<int>(closest_sum);
+
+
+
+
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <limits>
 
 using namespace std;
 
 int threeSumClosest(vector<int>& nums, int target) {
         sort(nums.begin(), nums.end());
-        int result;
-        int diff;
-        int sum;
+        int current_sum;
         int n = nums.size() - 1;
-        int min_diff = 1000;
+        int closest_sum = numeric_limits<int>::max();
         for (int i = 0; i < nums.size(); ++i) {
+            
+            if (i > 0 && nums[i] == nums[i-1]) {
+                continue;
+            }
+            
             int left = i + 1;
             int right = n;
 
             while (left < right) {
-                sum = nums[i] + nums[left] + nums[right];
-                diff = target - sum;
-                min_diff = min(diff, min_diff);
-                cout << "diff" << diff << endl;
-                cout << "min" << min_diff << endl;
-                if (sum < 0) {
-                    left++;
-                } else if (sum > 0) {
-                    right--;
-                } else {
-                   min_diff = min(diff, min_diff);
-     
-                    left++;
-                    while((nums[left] == nums[left-1]) && left < right) {
-                        left++;
-                    }
+                current_sum = nums[i] + nums[left] + nums[right];
+                
+                if (abs(current_sum - target) < abs(closest_sum - target)) {
+                    closest_sum = current_sum;
                 }
+                
+                if (current_sum == target) {
+                    return current_sum;
+                } else if (current_sum < target) {
+                    ++left;
+                } else {
+                    --right;
+                }
+
 
             }
         }    
-        return min_diff;
+        return closest_sum;
     }
 
 int main() {
