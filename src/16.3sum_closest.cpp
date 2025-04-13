@@ -1,34 +1,40 @@
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
         sort(nums.begin(), nums.end());
-        int n = nums.size();
-        long closest_sum = numeric_limits<int>::max(); // Используем long для избежания переполнения
-
+        const int n = nums.size();
+        int closest = nums[0] + nums[1] + nums[2]; // Начальное значение
+        
         for (int i = 0; i < n - 2; ++i) {
-            if (i > 0 && nums[i] == nums[i - 1]) {
-                continue; // Пропускаем дубликаты
-            }
-
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            
             int left = i + 1;
             int right = n - 1;
-
+            
             while (left < right) {
-                long current_sum = nums[i] + nums[left] + nums[right]; // Используем long
-
-                if (abs(current_sum - target) < abs(closest_sum - target)) {
-                    closest_sum = current_sum;
+                int sum = nums[i] + nums[left] + nums[right];
+                
+                if (abs(sum - target) < abs(closest - target)) {
+                    closest = sum;
+                    if (closest == target) return target; // Ранний выход при точном совпадении
                 }
-
-                if (current_sum == target) {
-                    return target; // Нашли точное совпадение
-                } else if (current_sum < target) {
-                    ++left;
+                
+                if (sum < target) {
+                    do { ++left; } while (left < right && nums[left] == nums[left-1]);
                 } else {
-                    --right;
+                    do { --right; } while (left < right && nums[right] == nums[right+1]);
                 }
             }
         }
-
-        return static_cast<int>(closest_sum);
-
+        return closest;
+    }
+};
 
 
 
