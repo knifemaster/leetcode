@@ -1,3 +1,46 @@
+        static constexpr const int values[256] = {
+            ['I'] = 1,
+            ['V'] = 5,
+            ['X'] = 10,
+            ['L'] = 50,
+            ['C'] = 100,
+            ['D'] = 500,
+            ['M'] = 1000
+        };
+
+class Solution {
+public:
+    int romanToInt(string s) {
+
+        
+        int result = 0;
+        const int n = s.size();
+        
+        // 2. Убираем проверки длины через добавление нулевого символа
+        for (int i = 0; i < n; ++i) {
+            int current = values[static_cast<unsigned char>(s[i])];
+            
+            // 3. Проверяем следующий символ только если он существует
+            if (i + 1 < n) {
+                int next = values[static_cast<unsigned char>(s[i+1])];
+                
+                // 4. Оптимизация проверки вычитаемых комбинаций
+                if (current < next) {
+                    result += next - current;
+                    ++i; // Пропускаем следующий символ
+                    continue;
+                }
+            }
+            
+            result += current;
+        }
+        
+        return result;
+  
+    }
+};
+
+
 #include <iostream>
 #include <unordered_map>
 #include <string>
