@@ -1,3 +1,32 @@
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if (strs.empty()) {
+            return "";
+        }
+        
+        string result;
+        int index = 0;
+        
+        while (true) {
+            if (index >= strs[0].size()) {
+                return result;
+            }
+            
+            char current_char = strs[0][index];
+            
+            for (const auto& word : strs) {
+                if (index >= word.size() || word[index] != current_char) {
+                    return result;
+                }
+            }
+            
+            result += current_char;
+            index++;
+        }
+    }
+};
+
 #include <string>
 #include <vector>
 #include <unordered_map>
