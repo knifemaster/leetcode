@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <print>
 
 struct ListNode {
     int val;
@@ -11,23 +12,44 @@ struct ListNode {
 
 
 ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-    ListNode* result = new ListNode();
-    //if (!list1 || !list2) {
-        
-    //}
-    //vector<int> result_vec;
-    result_vec.push_back();
 
-    while(list1 || list2) {
-        if (list1->val < list2->val) {
-            list1 = list1->next;
-        //    result = new ListNode(list1->val,)
-        } else {
-            list2 = list2->next;
-        }    
+    if (list1 == nullptr) {
+        return list2;
     }
 
-    return result;
+    if (list2 == nullptr) {
+        return list1;
+    }
+
+    if (list1->val <= list2->val) {
+        list1->next = mergeTwoLists(list1->next, list2);
+        return list1;
+    } else {
+        list2->next = mergeTwoLists(list1, list2->next);
+        return list2;
+    }
+
+
+    /*
+    while(list1) {
+        if (list1->val < list2->val) {
+            std::cout << list1->val << std::endl;
+            std::cout << list2->val << std::endl;
+            list1 = list1->next;
+            result.push_back(list1->val);
+        
+        } else {
+            std::cout << list1->val << std::endl;
+            std::cout << list2->val << std::endl;
+            list2 = list2->next;
+            result.push_back(list2->val);
+        }    
+    */
+    //}
+
+    //std::print("{}", result);
+
+    //return result1;
     
 }
 
@@ -48,10 +70,11 @@ int main() {
     ListNode* list2 = new ListNode(1, new ListNode(3, new ListNode(4)));
 
 
-
     printListNode(list1);
     std::cout << std::endl;
     printListNode(list2);
-    mergeTwoLists(list1, list2);
+    ListNode* res = mergeTwoLists(list1, list2);
+
+    printListNode(res);
 
 }
