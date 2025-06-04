@@ -123,3 +123,37 @@ public:
     }
 };
 
+
+
+
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> result;
+        string current;
+        current.reserve(2 * n);
+        backtrack(result, current, 0, 0, n);
+        return result;
+    }
+
+    void backtrack(vector<string>& res, string& current, int open, int close, int max) {
+        if (current.length() == max * 2) {
+            res.push_back(current);
+            return;
+        }
+
+        if (open < max) {
+            current.push_back('(');
+            backtrack(res, current, open + 1, close, max);
+            current.pop_back();
+        }
+        if (close < open) {
+            current.push_back(')');
+            backtrack(res, current, open, close + 1, max);
+            current.pop_back();
+        }
+    }
+};
+
+
+
