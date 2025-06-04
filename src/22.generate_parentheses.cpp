@@ -103,6 +103,7 @@ public:
 
     vector<string> generateParenthesis(int n) {
         vector<string> result;
+        result.reserve(n*4);
         backtrack(result, "", 0, 0, n);
         return result;
     }
