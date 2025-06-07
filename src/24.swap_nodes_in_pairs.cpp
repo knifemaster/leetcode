@@ -43,3 +43,43 @@ int main() {
     printListNode(root);
    return 0;
 }
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+
+    void visitListNode(ListNode* fast, ListNode* slow) {
+        if (fast == nullptr || slow == nullptr) {
+            return;
+        }
+
+        int temp = fast->val;
+        fast->val = slow->val;
+        slow->val = temp;
+
+        if (fast->next && fast->next->next) {
+            visitListNode(fast->next->next, fast->next);
+        }
+    }
+
+    ListNode* swapPairs(ListNode* head) {
+        if (!head) {
+            return nullptr;
+        }
+        visitListNode(head->next, head);
+        return head;    
+    }
+};
+
