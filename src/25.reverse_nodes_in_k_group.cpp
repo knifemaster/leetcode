@@ -25,11 +25,15 @@ void printListNode(ListNode* root) {
 
 ListNode* reverseKGroup(ListNode* head, int k) {
     ListNode* fast = head;
-
+    ListNode* next_head = nullptr;
     int count = 0;
 
     if (fast == nullptr) {
         return nullptr;
+    }
+
+    if (head == nullptr || k == 1) {
+        return head;
     }
 
     while(fast != nullptr && count < k) {
@@ -38,10 +42,32 @@ ListNode* reverseKGroup(ListNode* head, int k) {
         count++;
     }
 
+    if (count == k) {
+        std::cout << "count equals k" << std::endl;
+        next_head = reverseKGroup(fast, k);
+        fast = head;
+        ListNode* prev = nullptr;
+        ListNode* temp_next = nullptr;
+        count = 0;
+
+        while (count < k) {
+            temp_next = fast->next;
+            fast->next = prev;
+            prev = fast;
+            fast = temp_next;
+            count++;
+        }
+
+        head->next = next_head;
+        return prev;
+    } else {
+        return head;
+    }
+
     std::cout << std::endl;
     
     
-    return reverseKGroup(fast, k);
+    //return reverseKGroup(fast, k);
         
 
     //} 
