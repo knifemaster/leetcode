@@ -76,7 +76,7 @@ ListNode* reverseKGroup(ListNode* head, int k) {
     //std::cout << fast->val << std::endl;
     //std::cout << std::endl;
 
-    return fast;
+ //   return fast;
 }
 
 int main() {
@@ -90,3 +90,58 @@ int main() {
     return 0;
 
 }
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+    ListNode* fast = head;
+    ListNode* next_head = nullptr;
+    int count = 0;
+
+    if (fast == nullptr) {
+        return nullptr;
+    }
+
+    if (head == nullptr || k == 1) {
+        return head;
+    }
+
+    while(fast != nullptr && count < k) {
+        fast = fast->next;
+        count++;
+    }
+
+    if (count == k) {
+        next_head = reverseKGroup(fast, k);
+        fast = head;
+        ListNode* prev = nullptr;
+        ListNode* temp_next = nullptr;
+        count = 0;
+
+        while (count < k) {
+            temp_next = fast->next;
+            fast->next = prev;
+            prev = fast;
+            fast = temp_next;
+            count++;
+        }
+
+        head->next = next_head;
+        return prev;
+    } else {
+        return head;
+    }
+
+    }
+};
