@@ -8,17 +8,17 @@ int removeDuplicates(std::vector<int>& nums) {
         return 0;
     }
 
-    int left = 1;
+    int slow = 1;
 
-    for (int index = 1; index < nums.size(); ++index) {
-        if (nums[index] != nums[left - 1]) {
-            nums[left] = nums[index];
-            left++;
+    for (int fast = 1; fast < nums.size(); ++fast) {
+        if (nums[fast] != nums[slow - 1]) {
+            nums[slow] = nums[fast];
+            slow++;
         }
     }
 
 
-    return left;
+    return slow;
 
 }
 
