@@ -17,6 +17,11 @@ bool is_possible_moves(vector<vector<char>>& board, unordered_set<char>& row_sta
 }
 
 
+void backtrack(vector<vector<char>>& board, vector<char>& possible_numbers) {
+
+
+}
+
 
 void solveSudoku(std::vector<std::vector<char>>& board) {
 
