@@ -4,7 +4,8 @@
 #include <unordered_map>
 #include <algorithm>
 #include <stack>
-
+#include <utility>
+#include <list>
 
 using namespace std;
 
@@ -13,49 +14,19 @@ struct sudoku_state {
     std::vector<std::unordered_set<char>> horizontal_buckets;
     std::vector<std::unordered_set<char>> vertical_buckets;
     std::vector<std::unordered_set<char>> sub_boxes; 
-    std::stack<std::pair<int, int>> stack_of_indexes; // possibly not needed
-    // для возврата предидущих состояний
-    //
-//    std::vector<std::unordered_set<char>> possible_numbers;
+    std::vector<std::pair<int, int>> empty_cells;
 
 
     sudoku_state() : 
         horizontal_buckets(9),
         vertical_buckets(9),
         sub_boxes(9)//,
-        //possible_numbers(9) 
     { }
 
  
 };
 
 
-bool is_possible_moves(vector<vector<char>>& board, unordered_set<char>& row_state, unordered_set<char>& column_state, unordered_set<char>& sub_box) {
-
-    return true;
-    
-}
-
-
-/*
-void backtrack(vector<vector<char>>& board, vector<char>& possible_numbers, int i, int j) {
-
-
-    for (int i = 0; i < board.size(); i++) {
-        for (int j = 0; j < board[0].size(); j++) {
-            
-            board[i][j]
-
-
-
-        }
-
-
-    }
-
-
-}
-*/
 
 
 
@@ -180,6 +151,13 @@ bool check_column(vector<vector<char>>& board, int j, sudoku_state& state) {
 
     return true;
 }
+ 
+//1 9 8 3 4 2 5 6 7 
+//8 5 9 7 6 1 4 2 3 
+//4 2 6 8 5 3 7 9 1 
+//7 1 3 9 2 4 8 5 6 
+//9 6 1 5 3 7 2 8 4 
+//2 8 7 4 1 9 6 3 5 
 
 // первый проход просчитываем все возможные варианты заполняем buckets и sub_boxes
 // back_track () расчитываем возможные наборы чисел и по очереди добавляем в buckets и sub_boxes и помещамем в stack состояние клетки
@@ -188,19 +166,7 @@ bool check_column(vector<vector<char>>& board, int j, sudoku_state& state) {
 // refresh sub_boxes and buckets
 //
 
-void visit_all_sudoku(vector<vector<char>>& board, sudoku_state& state) {
-    for (int i = 0; i < board.size(); i++) {
-        for (int j = 0; j < board[0].size(); j++) {
-            check_column(board, j, state);
-            check_sub_box(board, i, j, state);
-        }
-        check_row(board, i, state);
-    }
-
-            
-}
-
-unordered_set<char> exclude_possible_numbers(sudoku_state& state, int i, int j) {
+unordered_set<char> include_possible_numbers(sudoku_state& state, int i, int j) {
     unordered_set<char> possible_numbers { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
     
 //  for (int i = 0; i < 9; i++) {
@@ -227,6 +193,34 @@ unordered_set<char> exclude_possible_numbers(sudoku_state& state, int i, int j) 
 
 
 }
+
+void visit_all_sudoku(vector<vector<char>>& board, sudoku_state& state) {
+    for (int i = 0; i < board.size(); i++) {
+        for (int j = 0; j < board[0].size(); j++) {
+            check_column(board, j, state);
+            check_sub_box(board, i, j, state);
+        }
+        check_row(board, i, state);
+    }
+
+    vector<tuple<int, int, int>> cells_with_options;
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (board[i][j] == '.') {
+                auto possible = include_possible_numbers(state, i, j);
+                cells_with_options.emplace_back(possible.size(), i, j);
+            }
+        }
+    }
+
+    sort(cells_with_options.begin(), cells_with_options.end());
+    for (auto& [cnt, i, j] : cells_with_options) {
+        state.empty_cells.emplace_back(i, j);
+    }
+            
+}
+
+
 
 void add_number_to_state(sudoku_state& state, int i, int j, char ch) {
     int sub_box_index = (i / 3) * 3 + (j / 3);
@@ -284,64 +278,38 @@ void print_all_states(sudoku_state& state) {
 
 }
 
-void solveSudoku(std::vector<std::vector<char>>& board) {
-
-    print_board(board);
-
-    sudoku_state state;
-
-    visit_all_sudoku(board, state);
-    print_all_states(state);
-
-    bool quit = false;
-
-    for (int i = 0; i < 9; i++) {
-
-        for (int j = 0; j < 9; j++) {
-
-            if (board[i][j] == '.') {
 
 
-                //вставляем число из possible_numbers
-                // если следующий шаг нет вставляемых чисел
-                // запоминаем i, j в стеке
-                // возвращаемся к предидущему состоянию (удаляем вставленное число и рефрешим наши бакеты и боксы )
-                // и вставляем другое возможное число
-                //
-                //if (j == 4) {
-                //    return;
-                //}
-                quit = false;
-                auto nums = exclude_possible_numbers(state, i, j);
+bool solve_sudoku(std::vector<std::vector<char>>& board, sudoku_state& state, int index) {
+    if (index == state.empty_cells.size()) {
+        return true;
+    }
 
-                if (nums.begin() == nums.end()) {
-                    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
-                    std::cout << i << " " << j << std::endl;
-                    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
-        
-                }
+    auto [i, j] = state.empty_cells[index];
 
-                std::cout << "Possible numbers is" << std::endl;
-                for (auto it = nums.begin(); it != nums.end(); ++it) {
+    auto possible = include_possible_numbers(state, i, j);
 
-                    
-                    if (!quit) {
-                        board[i][j] = *it;
-                        std::cout << *it << " ";   
-                        add_number_to_state(state, i, j, *it);
-                    }
-                    quit = true;
-                }
-                std::cout << std::endl;
+    int sub_box_index = (i / 3) * 3 + j / 3;
 
-            }
+    for (char num : possible) {
+        board[i][j] = num;
+        state.horizontal_buckets[i].insert(num);
+        state.vertical_buckets[j].insert(num);
+        state.sub_boxes[sub_box_index].insert(num);
 
+        if (solve_sudoku(board, state, index+1)) {
+            return true;
         }
 
-    }    
+        board[i][j] = '.';
+        state.horizontal_buckets[i].erase(num);
+        state.vertical_buckets[j].erase(num);
+        state.sub_boxes[sub_box_index].erase(num);
+    }
+
+    return false;
 
 
-    return;
 
 }
 
@@ -360,47 +328,15 @@ int main() {
                                   {'.', '.', '.', '.', '8', '.', '.', '7', '9'}};
 
 
-    solveSudoku(board);
-
-
-    print_board(board);
-/*
-    print_board(board);
-
     sudoku_state state;
 
     visit_all_sudoku(board, state);
-    print_all_states(state);
 
-
-    for (int i = 0; i < 9; i++) {
-
-        for (int j = 0; j < 9; j++) {
-
-            auto nums = exclude_possible_numbers(state, i, j);
-
-            std::cout << "Possible numbers is" << std::endl;
-            for (auto it = nums.begin(); it != nums.end(); ++it) {
-                std::cout << *it << " ";    
-            }
-            std::cout << std::endl;
-
-        }
-
+     if (solve_sudoku(board, state, 0)) {
+        cout << "Solved successfully!" << endl;
+        print_board(board);
     }
 
-*/
-
-//    std::cout << check_column(board, 2, state) << std::endl;
-//    std::cout << check_row(board, 1, state) << std::endl;
-//    std::cout << check_sub_box(board, 1, 1, state) << std::endl;
-//    for (const auto& number: state.sub_boxes[0]) {
-//        std::cout << number << std::endl;
-//    }
-    // сначала визит потом чекаем
-
-    //visit_sub_boxes(board, 0, 0, 3, 3);
-    //visit_sub_boxes(board, 0, 3, 3, 6);
 
     return 0;
 
