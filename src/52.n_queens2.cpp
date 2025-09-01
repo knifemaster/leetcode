@@ -97,5 +97,6 @@ int main() {
     int board_size = 6;
     auto solved = solveNQueens(board_size);
     //printOneSolution(solved, board_size);
+    std::cout << solved.size();
     printSolutions(solved, board_size);
 }
